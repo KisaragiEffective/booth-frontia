@@ -84,8 +84,11 @@
             return s;
         }
         const send = () => {
+            const loadingIndicator = document.getElementById("loading");
+            console.assert(loadingIndicator !== null);
+
             new Promise((resolve) => {
-                document.getElementById("loading").style.display = "inherit";
+                loadingIndicator.style.display = "inherit";
                 resolve(undefined)
             })
                 .then(() => fetch("http://localhost:19281/v1/cart", {
@@ -109,7 +112,7 @@
                         }))
                     });
 
-                    const r = document.getElementById("render");
+                    const r = document.getElementById("render_inner");
                     // reset and construct
                     r.innerHTML = items.map(e => {
                         return `<div class="item">
@@ -122,7 +125,7 @@
                     }).reduce((acc, e) => acc + e, "");
                 })
                 .finally(() => {
-                    document.getElementById("loading").style.display = "none";
+                    loadingIndicator.style.display = "none";
                 })
         };
     </script>
@@ -151,6 +154,7 @@
     </div>
 </form>
 <div id="render">
+    <div id="render_inner"></div>
     <div id="loading">
         loading...
     </div>
