@@ -117,7 +117,7 @@
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 <span class="choice">${e.variation ?? ""}</span>
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                <span class="price">${formatComma(e.number_price)} JPY</span>
+                <span class="price">${formatComma(e.price)} JPY</span>
                 </div>`
                     }).reduce((acc, e) => acc + e, "");
                 })
