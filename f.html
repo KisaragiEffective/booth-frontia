@@ -91,6 +91,8 @@
                     });
 
                     const r = document.getElementById("render");
+                    // reset
+                    r.innerHTML = "";
                     items.forEach((e) => {
                         // TODO: performance churn
                         r.innerHTML += `<div class="item">
@@ -120,11 +122,11 @@
 <form>
     <div class="group">
         <label for="cookie">クッキーの値</label>
-        <input type="password" placeholder="cookie" name="cookie" id="cookie">
+        <input type="password" placeholder="cookie" name="cookie" id="cookie" required>
     </div>
     <div class="group">
         <label for="consent-privacy-policy">プライバシーポリシーに同意します</label>
-        <input type="checkbox" name="consent-privacy-policy" id="consent-privacy-policy">
+        <input type="checkbox" name="consent-privacy-policy" id="consent-privacy-policy" required>
     </div>
     <div class="group">
         <input type="button" value="表示" onclick="javascript:send()">
