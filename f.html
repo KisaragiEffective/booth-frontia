@@ -4,8 +4,9 @@
     <title>X</title>
     <style>
         :root {
-            --item-title-size: 1.75em;
+            --item-title-size: 1em;
             --item-thumb-size: 72px;
+            --choice-font-size: calc(var(--item-title-size) / 4 * 3);
         }
 
         .name {
@@ -22,8 +23,8 @@
         .item {
             display: grid;
             margin: 0.7em 0;
-            grid-template-columns: minmax(auto, var(--item-thumb-size)) auto;
-            grid-template-rows: var(--item-title-size) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2)) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2));
+            grid-template-columns: minmax(auto, var(--item-thumb-size)) 1fr;
+            grid-template-rows: var(--item-title-size) minmax(0, calc((var(--item-thumb-size) - var(--item-title-size)) / 3)) minmax(auto, 1fr) minmax(auto, 1fr);
             white-space: nowrap;
         }
 
@@ -33,11 +34,12 @@
             grid-column-start: 2;
             grid-column-end: 2;
             color: rgba(0, 0, 0, 0.5);
+            font-size: var(--choice-font-size);
         }
 
         .item-thumb {
             grid-row-start: 1;
-            grid-row-end: 4;
+            grid-row-end: 5;
             grid-column-start: 1;
             grid-column-end: 1;
         }
@@ -57,6 +59,20 @@
         * {
             margin: 0;
             padding: 0;
+        }
+
+        .price {
+            grid-row-start: 4;
+            grid-column-start: 2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1167f3;
+        }
+
+        #render_inner {
+            display: grid;
         }
     </style>
     <meta charset="utf-8">
