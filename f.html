@@ -63,27 +63,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("loading").style.display = "none";
-        })
-        const formatComma = (n) => {
-            if (typeof(n) !== "number") throw new TypeError("n must be a number");
-            if (n < 0) throw new Error("n must not be negative");
-            let s = "";
-            let isFirst = true;
-
-            if (n >= 1_000_000) {
-                s += Math.floor(n / 1_000_000 % 1000).toString(10).padStart(3, "0") + ",";
-                n = n % 1_000_000;
-            }
-            if (n >= 1000) {
-                s += Math.floor(n / 1000 % 1000).toString(10).padStart(3, "0") + ",";
-                n = n % 1000;
-            }
-            if (n > 0) {
-                s += (n % 1000).toString(10).padStart(3, "0");
-            }
-
-            return s;
-        }
+        });
         const send = () => {
             const loadingIndicator = document.getElementById("loading");
             console.assert(loadingIndicator !== null);
