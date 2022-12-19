@@ -127,22 +127,36 @@
             text-align: center;
             background-color: #224f7b;
         }
+
+        #preload {
+            border-width: thick;
+            border-style: dashed;
+            text-align: center;
+        }
     </style>
     <meta charset="utf-8">
     <script>
+        const hide = (e /** @type {HTMLElement} */) => {
+            e.style.display = "none";
+        };
+        const show = (e /** @type {HTMLElement} */) => {
+            e.style.display = "inherit";
+        };
+        const loadingIndicator = document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("loading").style.display = "none";
+            hide(loadingIndicator);
             document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
         });
         const shouldInvoke = () => document.getElementById("form").checkValidity();
         const send = () => {
             if (!shouldInvoke()) return;
 
-            const loadingIndicator = document.getElementById("loading");
             console.assert(loadingIndicator !== null);
 
             new Promise((resolve) => {
-                loadingIndicator.style.display = "inherit";
+                const preload = document.getElementById("preload");
+                hide(preload);
+                show(loadingIndicator);
                 resolve(undefined)
             })
                 .then(() => fetch("http://localhost:19281/v1/cart", {
@@ -180,7 +194,7 @@
                     }).reduce((acc, e) => acc + e, "");
                 })
                 .finally(() => {
-                    loadingIndicator.style.display = "none";
+                    hide(loadingIndicator);
                 })
         };
     </script>
@@ -215,6 +229,7 @@
     </div>
 </form>
 <div id="render">
+    <div id="preload">ここにあなたのカートの内容が表示されます</div>
     <div id="render_inner"></div>
     <div id="loading">
         loading...
