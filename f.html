@@ -68,6 +68,7 @@
             if (typeof(n) !== "number") throw new TypeError("n must be a number");
             if (n < 0) throw new Error("n must not be negative");
             let s = "";
+            let isFirst = true;
 
             if (n >= 1_000_000) {
                 s += Math.floor(n / 1_000_000 % 1000).toString(10).padStart(3, "0") + ",";
@@ -120,7 +121,7 @@
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 <span class="choice">${e.variation ?? ""}</span>
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                <span class="price">${formatComma(e.price)} JPY</span>
+                <span class="price">${e.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'})}</span>
                 </div>`
                     }).reduce((acc, e) => acc + e, "");
                 })
