@@ -4,8 +4,9 @@
     <title>X</title>
     <style>
         :root {
-            --item-title-size: 1.75em;
+            --item-title-size: 1em;
             --item-thumb-size: 72px;
+            --choice-font-size: calc(var(--item-title-size) / 4 * 3);
         }
 
         .name {
@@ -22,8 +23,8 @@
         .item {
             display: grid;
             margin: 0.7em 0;
-            grid-template-columns: minmax(auto, var(--item-thumb-size)) auto;
-            grid-template-rows: var(--item-title-size) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2)) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2));
+            grid-template-columns: minmax(auto, var(--item-thumb-size)) 1fr;
+            grid-template-rows: var(--item-title-size) minmax(0, calc((var(--item-thumb-size) - var(--item-title-size)) / 3)) minmax(auto, 1fr) minmax(auto, 1fr);
             white-space: nowrap;
         }
 
@@ -33,21 +34,21 @@
             grid-column-start: 2;
             grid-column-end: 2;
             color: rgba(0, 0, 0, 0.5);
+            font-size: var(--choice-font-size);
         }
 
-        .item > img {
+        .item-thumb {
             grid-row-start: 1;
-            grid-row-end: 4;
+            grid-row-end: 5;
             grid-column-start: 1;
             grid-column-end: 1;
         }
 
         .shop {
-            grid-row-start: 3;
             grid-column-start: 2;
         }
 
-        #render {
+        #render_inner {
             display: grid;
             /* TODO: responsible */
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -58,38 +59,104 @@
             margin: 0;
             padding: 0;
         }
+
+        .price {
+            grid-column-start: 2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1167f3;
+        }
+
+        #render_inner {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-item-columns), 1fr);
+        }
+
+        @media(max-width: 1920px) {
+            :root {
+                --grid-item-columns: 5;
+            }
+        }
+
+        @media(max-width: 1500px) {
+            :root {
+                --grid-item-columns: 4;
+            }
+        }
+
+        @media(max-width: 1200px) {
+            :root {
+                --grid-item-columns: 3;
+            }
+        }
+
+        @media(max-width: 900px) {
+            :root {
+                --grid-item-columns: 2;
+            }
+        }
+
+        @media(max-width: 600px) {
+            :root {
+                --grid-item-columns: 1;
+            }
+        }
+
+        h2 {
+            border-bottom-style: solid;
+            border-bottom-width: thin;
+            margin: 0.2em 0;
+        }
+
+        body {
+            padding: 0.25em;
+        }
+
+        .horizontal-form {
+            list-style-type: none;
+        }
+
+        .horizontal-form > li {
+            display: inline;
+        }
+
+        footer {
+            color: hsl(0, 8.2%, 59.4%);
+            text-align: center;
+            background-color: #224f7b;
+        }
+
+        #preload {
+            border-width: thick;
+            border-style: dashed;
+            text-align: center;
+        }
     </style>
     <meta charset="utf-8">
     <script>
+        const hide = (e /** @type {HTMLElement} */) => {
+            e.style.display = "none";
+        };
+        const show = (e /** @type {HTMLElement} */) => {
+            e.style.display = "inherit";
+        };
+        const loadingIndicator = () => document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("loading").style.display = "none";
-        })
-        const formatComma = (n) => {
-            if (typeof(n) !== "number") throw new TypeError("n must be a number");
-            if (n < 0) throw new Error("n must not be negative");
-            let s = "";
-            let isFirst = true;
-
-            if (n >= 1_000_000) {
-                s += Math.floor(n / 1_000_000 % 1000).toString(10).padStart(3, "0") + ",";
-                n = n % 1_000_000;
-            }
-            if (n >= 1000) {
-                s += Math.floor(n / 1000 % 1000).toString(10).padStart(3, "0") + ",";
-                n = n % 1000;
-            }
-            if (n > 0) {
-                s += (n % 1000).toString(10).padStart(3, "0");
-            }
-
-            return s;
-        }
+            hide(loadingIndicator());
+            document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
+        });
+        const shouldInvoke = () => document.getElementById("form").checkValidity();
         const send = () => {
-            const loadingIndicator = document.getElementById("loading");
-            console.assert(loadingIndicator !== null);
+            if (!shouldInvoke()) return;
+
+            console.assert(loadingIndicator() !== null);
 
             new Promise((resolve) => {
-                loadingIndicator.style.display = "inherit";
+                const preload = document.getElementById("preload");
+                hide(preload);
+                show(loadingIndicator());
                 resolve(undefined)
             })
                 .then(() => fetch("http://localhost:19281/v1/cart", {
@@ -118,16 +185,16 @@
                     // reset and construct
                     r.innerHTML = items.map(e => {
                         return `<div class="item">
-                <img src="${e.image}" alt="${e.name}">
+                <img src="${e.image}" alt="${e.name}" class="item-thumb">
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
-                <span class="choice">${e.variation ?? ""}</span>
+                ${e.variation ? `<span class="choice">${e.variation}</span>` : ""}
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
                 <span class="price">${e.price.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'})}</span>
                 </div>`
                     }).reduce((acc, e) => acc + e, "");
                 })
                 .finally(() => {
-                    loadingIndicator.style.display = "none";
+                    hide(loadingIndicator());
                 })
         };
     </script>
@@ -135,14 +202,20 @@
 <body>
 <noscript>JavaScriptを有効にしてください。</noscript>
 <div>
+    <h1>BOOTH&trade;のカート表示ツール</h1>
+    <h2>これは何？</h2>
+    <p>BOOTH&trade;のカートを黒魔術で表示します。</p>
+    <h2>どうしたら使える？</h2>
+    <p>クッキーを下のフォームに入れてボタンをクリックしてください。</p>
     <h2>クッキーの値を取得する方法</h2>
+    <p>色々ありますが、一番ラクなのはデスクトップブラウザの拡張機能を使う方法です。</p>
     <h3>拡張機能を使う</h3>
     <p><code>_plaza_session_nktz7u</code>という名前のクッキーを探し、その値をコピー・アンド・ペーストしてください。JavaScriptから表示させることはできません。</p>
     <h2>プライバシーポリシー</h2>
     <p>当サービスはあなたのブラウザ上のクッキーを読み取る、及び書き込むことはありません。</p>
     <p>サーバーに問い合わせるために<code>_plaza_session_nktz7u</code>という名前のクッキーを手動で入力していただく必要があります。この値はサーバーに保存されません。</p>
 </div>
-<form>
+<form id="form">
     <div class="group">
         <label for="cookie">クッキーの値</label>
         <input type="password" placeholder="cookie" name="cookie" id="cookie" required>
@@ -156,10 +229,24 @@
     </div>
 </form>
 <div id="render">
+    <div id="preload">ここにあなたのカートの内容が表示されます</div>
     <div id="render_inner"></div>
     <div id="loading">
         loading...
     </div>
 </div>
 </body>
+<footer>
+    <div id="copyright">
+        &copy; <span id="copyright-year"></span> Kisaragi Marine
+        <address>
+            <ul class="horizontal-form">
+                <li><a href="mailto:kisaragi.effective@gmail.com">mail</a></li>
+            </ul>
+        </address>
+    </div>
+    <div id="disclaimer">
+        <p><em>BOOTH</em>はピクシブ株式会社の登録商標です（商標第6506932号）。</p>
+    </div>
+</footer>
 </html>
