@@ -109,14 +109,30 @@
             border-bottom-width: thin;
             margin: 0.2em 0;
         }
+
         body {
             padding: 0.25em;
+        }
+
+        .horizontal-form {
+            list-style-type: none;
+        }
+
+        .horizontal-form > li {
+            display: inline;
+        }
+
+        footer {
+            color: rgba(0, 0, 0, 0.25);
+            text-align: center;
+            background-color: #666666;
         }
     </style>
     <meta charset="utf-8">
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("loading").style.display = "none";
+            document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
         });
         const send = () => {
             const loadingIndicator = document.getElementById("loading");
@@ -206,7 +222,7 @@
     <div id="copyright">
         <span id="copyright-year"></span> Kisaragi Marine
         <address>
-            <ul>
+            <ul class="horizontal-form">
                 <li><a href="mailto:kisaragi.effective@gmail.com">mail</a></li>
             </ul>
         </address>
