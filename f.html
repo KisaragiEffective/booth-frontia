@@ -64,6 +64,25 @@
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("loading").style.display = "none";
         })
+        const formatComma = (n) => {
+            if (typeof(n) !== "number") throw new TypeError("n must be a number");
+            if (n < 0) throw new Error("n must not be negative");
+            let s = "";
+
+            if (n >= 1_000_000) {
+                s += (n / 1_000_000 % 1000).toString(10).padStart(3, "0") + ",";
+                n = n % 1_000_000;
+            }
+            if (n >= 1000) {
+                s += (n / 1000 % 1000).toString(10).padStart(3, "0") + ",";
+                n = n % 1000;
+            }
+            if (n > 0) {
+                s += (n % 1000).toString(10).padStart(3, "0");
+            }
+
+            return s;
+        }
         const send = () => {
             new Promise((resolve) => {
                 document.getElementById("loading").style.display = "inherit";
@@ -80,6 +99,7 @@
                         return region.cart_items.map(cartItem => ({
                             name: cartItem.item.name,
                             image: cartItem.item.primary_image,
+                            price: cartItem.item.number_price,
                             url: cartItem.item.url,
                             variation: cartItem.variation.name || undefined,
                             region: {
@@ -97,6 +117,7 @@
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 <span class="choice">${e.variation ?? ""}</span>
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
+                <span class="price">${formatComma(e.number_price)} JPY</span>
                 </div>`
                     }).reduce((acc, e) => acc + e, "");
                 })
