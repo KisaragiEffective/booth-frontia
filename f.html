@@ -91,17 +91,15 @@
                     });
 
                     const r = document.getElementById("render");
-                    // reset
-                    r.innerHTML = "";
-                    items.forEach((e) => {
-                        // TODO: performance churn
-                        r.innerHTML += `<div class="item">
+                    // reset and construct
+                    r.innerHTML = items.map(e => {
+                        return `<div class="item">
                 <img src="${e.image}" alt="`${e.name}`">
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 <span class="choice">${e.variation ?? ""}</span>
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                </div>`;
-                    });
+                </div>`
+                    }).reduce((acc, e) => acc + e, "");
                 })
                 .finally(() => {
                     document.getElementById("loading").style.display = "none";
