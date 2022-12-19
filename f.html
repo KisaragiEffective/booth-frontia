@@ -22,8 +22,8 @@
                 .then(regions => {
                     const items = regions.flatMap(region => {
                         region.cart_items.map(cartItem => ({
-                            name: cartItem.name,
-                            image: cartItem.primary_image,
+                            name: cartItem.item.name,
+                            image: cartItem.item.primary_image,
                             url: cartItem.item.url,
                             variation: cartItem.variation.name || undefined,
                             region: {
