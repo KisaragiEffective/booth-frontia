@@ -70,11 +70,11 @@
             let s = "";
 
             if (n >= 1_000_000) {
-                s += (n / 1_000_000 % 1000).toString(10).padStart(3, "0") + ",";
+                s += Math.floor(n / 1_000_000 % 1000).toString(10).padStart(3, "0") + ",";
                 n = n % 1_000_000;
             }
             if (n >= 1000) {
-                s += (n / 1000 % 1000).toString(10).padStart(3, "0") + ",";
+                s += Math.floor(n / 1000 % 1000).toString(10).padStart(3, "0") + ",";
                 n = n % 1000;
             }
             if (n > 0) {
