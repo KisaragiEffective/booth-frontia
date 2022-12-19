@@ -1,82 +1,131 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>X</title>
-        <meta charset="utf-8">
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                document.getElementById("loading").style.display = "none";
-            })
-            const send = () => {
-                const c = document.getElementById("cookie");
-                new Promise((resolve) => {
-                    document.getElementById("loading").style.display = "inherit";
-                    resolve(undefined)
-                })
-                .then(() => fetch("http://localhost:19281/v1/cart", {
-                    headers: {
-                        "authorization": document.getElementById("cookie").value
-                    }
-                }))
-                .then(x => x.json())
-                .then(regions => {
-                    const items = regions.flatMap(region => {
-                        return region.cart_items.map(cartItem => ({
-                            name: cartItem.item.name,
-                            image: cartItem.item.primary_image,
-                            url: cartItem.item.url,
-                            variation: cartItem.variation.name || undefined,
-                            region: {
-                                name: region.shop.name,
-                                base: region.shop.base_url,
-                            }
-                        }))
-                    });
+<head>
+<title>X</title>
+<style>
+    :root {
+        --item-title-size: 1.75em;
+        --item-thumb-size: 72px;
+    }
+    .name {
+    font-size: var(--item-title-size);
+    font-weight: bold;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    }
+    .item {
+    display: grid;
+    margin: 0.7em 0;
+    grid-template-columns: minmax(auto, var(--item-thumb-size)) auto;
+    /* TODO: responsible */
+    grid-template-rows: var(--item-title-size) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2)) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2));
+    white-space: nowrap;
+    }
+    .choice {
+    grid-row-start: 2;
+    grid-row-end: 2;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    }
+    .item > img {
+    grid-row-start: 1;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 1;
+    }
+    .shop {
+    grid-row-start: 3;
+    grid-column-start: 2;
+    }
+    #render {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-auto-rows: min-content;
+    }
+    * {
+    margin: 0;
+    padding: 0;
+    }
+</style>
+<meta charset="utf-8">
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("loading").style.display = "none";
+})
+const send = () => {
+    const c = document.getElementById("cookie");
+    new Promise((resolve) => {
+        document.getElementById("loading").style.display = "inherit";
+        resolve(undefined)
+    })
+    .then(() => fetch("http://localhost:19281/v1/cart", {
+        headers: {
+            "authorization": document.getElementById("cookie").value
+        }
+    }))
+    .then(x => x.json())
+    .then(regions => {
+        const items = regions.flatMap(region => {
+            return region.cart_items.map(cartItem => ({
+                name: cartItem.item.name,
+                image: cartItem.item.primary_image,
+                url: cartItem.item.url,
+                variation: cartItem.variation.name || undefined,
+                region: {
+                    name: region.shop.name,
+                    base: region.shop.base_url,
+                }
+            }))
+        });
 
-                    const r = document.getElementById("render");
-                    items.forEach((e) => {
-                        // TODO: performance churn
-                        r.innerHTML += `<div class="item">
-                            <img src="${e.image}">
-                            <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
-                            <span class="choice">${e.variation ?? ""}</span>
-                            <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                            </div>`;
-                    });
-                })
-                .finally(() => {
-                    document.getElementById("loading").style.display = "none";
-                })
-            };
-        </script>
-    </head>
-    <body>
-        <noscript>JavaScriptを有効にしてください。</noscript>
-        <div>
-            <h2>クッキーの値を取得する方法</h2>
-            <h3>拡張機能を使う</h3>
-            <p><code>_plaza_session_nktz7u</code>という名前のクッキーを探し、その値をコピー・アンド・ペーストしてください。JavaScriptから表示させることはできません。</p>
-            <h2>プライバシーポリシー</h2>
-            <p>当サービスはあなたのブラウザ上のクッキーを読み取る、及び書き込むことはありません。</p>
-            <p>サーバーに問い合わせるために<code>_plaza_session_nktz7u</code>という名前のクッキーを手動で入力していただく必要があります。この値はサーバーに保存されません。</p>
+        const r = document.getElementById("render");
+        items.forEach((e) => {
+            // TODO: performance churn
+            r.innerHTML += `<div class="item">
+                <img src="${e.image}">
+                <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
+                <span class="choice">${e.variation ?? ""}</span>
+                <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
+                </div>`;
+        });
+    })
+    .finally(() => {
+        document.getElementById("loading").style.display = "none";
+    })
+};
+</script>
+</head>
+<body>
+    <noscript>JavaScriptを有効にしてください。</noscript>
+    <div>
+        <h2>クッキーの値を取得する方法</h2>
+        <h3>拡張機能を使う</h3>
+        <p><code>_plaza_session_nktz7u</code>という名前のクッキーを探し、その値をコピー・アンド・ペーストしてください。JavaScriptから表示させることはできません。</p>
+        <h2>プライバシーポリシー</h2>
+        <p>当サービスはあなたのブラウザ上のクッキーを読み取る、及び書き込むことはありません。</p>
+        <p>サーバーに問い合わせるために<code>_plaza_session_nktz7u</code>という名前のクッキーを手動で入力していただく必要があります。この値はサーバーに保存されません。</p>
+    </div>
+    <form>
+        <div class="group">
+            <label for="cookie">クッキーの値</label>
+            <input type="password" placeholder="cookie" name="cookie" id="cookie">
         </div>
-        <form>
-            <div class="group">
-                <label for="cookie">クッキーの値</label>
-                <input type="password" placeholder="cookie" name="cookie" id="cookie">
-            </div>
-            <div class="group">
-                <label for="consent-privacy-policy">プライバシーポリシーに同意します</label>
-                <input type="checkbox" name="consent-privacy-policy">
-            </div>
-            <div class="group">
-                <input type="button" value="表示" onclick="javascript:send()">
-            </div>
-        </form>
-        <div id="render">
-            <div id="loading">
-                loading...
-            </div>
+        <div class="group">
+            <label for="consent-privacy-policy">プライバシーポリシーに同意します</label>
+            <input type="checkbox" name="consent-privacy-policy">
         </div>
-    </body>
+        <div class="group">
+            <input type="button" value="表示" onclick="javascript:send()">
+        </div>
+    </form>
+    <div id="render">
+        <div id="loading">
+            loading...
+        </div>
+    </div>
+</body>
 </html>
