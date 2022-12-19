@@ -142,21 +142,21 @@
         const show = (e /** @type {HTMLElement} */) => {
             e.style.display = "inherit";
         };
-        const loadingIndicator = document.getElementById("loading");
+        const loadingIndicator = () => document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
-            hide(loadingIndicator);
+            hide(loadingIndicator());
             document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
         });
         const shouldInvoke = () => document.getElementById("form").checkValidity();
         const send = () => {
             if (!shouldInvoke()) return;
 
-            console.assert(loadingIndicator !== null);
+            console.assert(loadingIndicator() !== null);
 
             new Promise((resolve) => {
                 const preload = document.getElementById("preload");
                 hide(preload);
-                show(loadingIndicator);
+                show(loadingIndicator());
                 resolve(undefined)
             })
                 .then(() => fetch("http://localhost:19281/v1/cart", {
@@ -194,7 +194,7 @@
                     }).reduce((acc, e) => acc + e, "");
                 })
                 .finally(() => {
-                    hide(loadingIndicator);
+                    hide(loadingIndicator());
                 })
         };
     </script>
