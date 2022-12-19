@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BOOTH™ツール</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
+    });
+  </script>
+  <style>
+    .horizontal-form {
+      list-style-type: none;
+    }
+
+    .horizontal-form > li {
+      display: inline;
+    }
+
+    footer {
+      color: hsl(0, 8.2%, 59.4%);
+      text-align: center;
+      background-color: #224f7b;
+    }
+  </style>
+</head>
+<body>
+<h2>重要</h2>
+<p>このサイトは非公式のツールであり、ピクシブ株式会社やBOOTHと何ら関係があるものではありません。</p>
+<h2>ツール</h2>
+<a href="cart.html">買い物カート</a> - 表示
+<a href="wish.html">ほしいものリスト</a> - 表示・公開
+</body>
+<footer>
+  <div id="copyright">
+    &copy; <span id="copyright-year"></span> Kisaragi Marine
+    <address>
+      <ul class="horizontal-form">
+        <li><a href="mailto:kisaragi.effective@gmail.com">mail</a></li>
+      </ul>
+    </address>
+  </div>
+  <div id="disclaimer">
+    <p><em>BOOTH</em>はピクシブ株式会社の登録商標です（商標第6506932号）。</p>
+  </div>
+</footer>
+</html>
