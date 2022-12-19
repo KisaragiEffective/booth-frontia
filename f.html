@@ -38,10 +38,9 @@
                         // TODO: performance churn
                         r.innerHTML += `<div class="item">
                             <img src="${e.image}">
-                            <span class="name">${e.name}</span>
+                            <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                             <span class="choice">${e.variation ?? ""}</span>
                             <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                            <div class="external">${e.url}</div>
                             </div>`;
                     });
                 })
