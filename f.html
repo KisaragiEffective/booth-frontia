@@ -13,7 +13,7 @@
                     document.getElementById("loading").style.display = "inherit";
                     resolve(undefined)
                 })
-                .then(() => fetch("https://localhost:19281/v1/cart", {
+                .then(() => fetch("http://localhost:19281/v1/cart", {
                     headers: {
                         "authorization": document.getElementById("cookie").value
                     }
