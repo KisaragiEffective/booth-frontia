@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>X</title>
+        <meta charset="utf-8">
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                document.getElementById("loading").style.display = "none";
+            })
+            const send = () => {
+                const c = document.getElementById("cookie");
+                new Promise((resolve) => {
+                    document.getElementById("loading").style.display = "inherit";
+                    resolve(undefined)
+                })
+                .then(() => fetch("https://localhost:19281/v1/cart", {
+                    headers: {
+                        "authorization": document.getElementById("cookie").value
+                    }
+                }))
+                .then(x => x.json())
+                .then(regions => {
+                    const items = regions.flatMap(region => {
+                        region.cart_items.map(cartItem => ({
+                            name: cartItem.name,
+                            image: cartItem.primary_image,
+                            url: cartItem.item.url,
+                            variation: cartItem.variation.name || undefined,
+                            region: {
+                                name: region.shop.name,
+                                base: region.shop.base_url,
+                            }
+                        }))
+                    });
+
+                    const r = document.getElementById("render");
+                    items.forEach(element => {
+                        // TODO: performance churn
+                        r.innerHTML += `<div class="item">
+                            <img src="${element.image}">
+                            <span class="name">${element.name}</span>
+                            <span class="choice">${element.variation ?? ""}</span>
+                            <span class="shop"><a href="${element.region.base}">${element.region.name}</a></span>
+                            <div class="external">${element.url}</div>
+                            </div>`;
+                    });
+                })
+                .finally(() => {
+                    document.getElementById("loading").style.display = "none";
+                })
+            };
+        </script>
+    </head>
+    <body>
+        <noscript>JavaScriptを有効にしてください。</noscript>
+        <div>
+            <h2>クッキーの値を取得する方法</h2>
+            <h3>拡張機能を使う</h3>
+            <p><code>_plaza_session_nktz7u</code>という名前のクッキーを探し、その値をコピー・アンド・ペーストしてください。開発者ツールから表示することはできません。</p>
+            <h2>プライバシーポリシー</h2>
+            <p>当サービスはあなたのブラウザ上のクッキーを読み取る、及び書き込むことはありません。</p>
+            <p>サーバーに問い合わせるために<code>_plaza_session_nktz7u</code>という名前のクッキーを手動で入力していただく必要があります。この値はサーバーに保存されません。</p>
+        </div>
+        <form>
+            <label for="cookie">クッキーの値</label>
+            <input type="password" placeholder="cookie" name="cookie" id="cookie">
+            <label for="consent-privacy-policy">プライバシーポリシーに同意します</label>
+            <input type="checkbox" name="consent-privacy-policy">
+            <input type="button" value="表示" onclick="javascript:send()">
+        </form>
+        <div id="render">
+            <div id="loading">
+                loading...
+            </div>
+        </div>
+    </body>
+</html>
