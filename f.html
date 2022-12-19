@@ -86,7 +86,7 @@ const send = () => {
         items.forEach((e) => {
             // TODO: performance churn
             r.innerHTML += `<div class="item">
-                <img src="${e.image}">
+                <img src="${e.image}" alt="`${e.name}`">
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 <span class="choice">${e.variation ?? ""}</span>
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
