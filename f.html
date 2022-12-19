@@ -23,7 +23,6 @@
             display: grid;
             margin: 0.7em 0;
             grid-template-columns: minmax(auto, var(--item-thumb-size)) auto;
-            /* TODO: responsible */
             grid-template-rows: var(--item-title-size) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2)) minmax(auto, calc((var(--item-thumb-size) - var(--item-title-size)) / 2));
             white-space: nowrap;
         }
@@ -50,6 +49,7 @@
 
         #render {
             display: grid;
+            /* TODO: responsible */
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             grid-auto-rows: min-content;
         }
