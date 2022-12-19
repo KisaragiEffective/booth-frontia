@@ -172,7 +172,7 @@
     const shouldInvoke = () => document.getElementById("form").checkValidity();
     const addItem = (id) => {
       const render = document.getElementById("render_inner");
-      fetch(`http://localhost:19281/v1/item/${id}`)
+      fetch(`http://fiddle.ksrgte.ch:19281/v1/item/${id}`)
               .then(x => x.json())
               .then(x => {
                 /** @type {{priceCurrency: "JPY"}} */
