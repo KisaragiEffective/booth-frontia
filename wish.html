@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>X</title>
+  <style>
+    :root {
+      --item-title-size: 1em;
+      --item-thumb-size: 72px;
+      --choice-font-size: calc(var(--item-title-size) / 4 * 3);
+    }
+
+    .name {
+      font-size: var(--item-title-size);
+      font-weight: bold;
+      grid-column-start: 2;
+      grid-column-end: 2;
+      grid-row-start: 1;
+      grid-row-end: 2;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .item {
+      display: grid;
+      margin: 0.7em 0;
+      grid-template-columns: minmax(auto, var(--item-thumb-size)) 1fr;
+      grid-template-rows: var(--item-title-size) minmax(0, calc((var(--item-thumb-size) - var(--item-title-size)) / 3)) minmax(auto, 1fr) minmax(auto, 1fr);
+      white-space: nowrap;
+    }
+
+    .choice {
+      grid-row-start: 2;
+      grid-row-end: 2;
+      grid-column-start: 2;
+      grid-column-end: 2;
+      color: rgba(0, 0, 0, 0.5);
+      font-size: var(--choice-font-size);
+    }
+
+    .item-thumb {
+      grid-row-start: 1;
+      grid-row-end: 5;
+      grid-column-start: 1;
+      grid-column-end: 1;
+    }
+
+    .shop {
+      grid-column-start: 2;
+    }
+
+    #render_inner {
+      display: grid;
+      /* TODO: responsible */
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-auto-rows: min-content;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .price {
+      grid-column-start: 2;
+    }
+
+    a {
+      text-decoration: none;
+      color: #1167f3;
+    }
+
+    #render_inner {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-item-columns), 1fr);
+    }
+
+    @media(max-width: 1920px) {
+      :root {
+        --grid-item-columns: 5;
+      }
+    }
+
+    @media(max-width: 1500px) {
+      :root {
+        --grid-item-columns: 4;
+      }
+    }
+
+    @media(max-width: 1200px) {
+      :root {
+        --grid-item-columns: 3;
+      }
+    }
+
+    @media(max-width: 900px) {
+      :root {
+        --grid-item-columns: 2;
+      }
+    }
+
+    @media(max-width: 600px) {
+      :root {
+        --grid-item-columns: 1;
+      }
+    }
+
+    h2 {
+      border-bottom-style: solid;
+      border-bottom-width: thin;
+      margin: 0.2em 0;
+    }
+
+    body {
+      padding: 0.25em;
+    }
+
+    .horizontal-form {
+      list-style-type: none;
+    }
+
+    .horizontal-form > li {
+      display: inline;
+    }
+
+    footer {
+      color: hsl(0, 8.2%, 59.4%);
+      text-align: center;
+      background-color: #224f7b;
+    }
+
+    #preload {
+      border-width: thick;
+      border-style: dashed;
+      text-align: center;
+    }
+  </style>
+  <meta charset="utf-8">
+  <script>window.twttr = (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+    if (d.getElementById(id)) return t;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+
+    t._e = [];
+    t.ready = function(f) {
+      t._e.push(f);
+    };
+
+    return t;
+  }(document, "script", "twitter-wjs"));</script>
+  <script>
+    const hide = (e /** @type {HTMLElement} */) => {
+      e.style.display = "none";
+    };
+    const show = (e /** @type {HTMLElement} */) => {
+      e.style.display = "inherit";
+    };
+    const loadingIndicator = () => document.getElementById("loading");
+    document.addEventListener("DOMContentLoaded", () => {
+      hide(loadingIndicator());
+      document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
+      const h = location.hash;
+      if (h) {
+        show(loadingIndicator());
+        deserialize(h.replace(/^#/, ""));
+        hide(loadingIndicator());
+      }
+    });
+    const shouldInvoke = () => document.getElementById("form").checkValidity();
+    const addItem = (id) => {
+      const render = document.getElementById("render_inner");
+      fetch(`http://localhost:19281/v1/item/${id}`)
+              .then(x => x.json())
+              .then(x => {
+                /** @type {{priceCurrency: "JPY"}} */
+                const o = x.offers;
+                const format = (n /** @type {number} */) =>
+                        n.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'});
+                const d = {
+                  AggregateOffer() {
+                    return `${format(parseInt(o.lowPrice, 10))} 〜`;
+                  },
+                  Offer() {
+                    return format(parseInt(o.price, 10));
+                  },
+                }
+                return `<div class="item" data-item-id="${id}">
+<img src="${x.image}" alt="${x.name}" class="item-thumb">
+<span class="name"><a href="${x.url}" class="external">${x.name}</a></span>
+<span class="price">${ d[o["@type"]]() }</span>
+</div>`
+              })
+              .then(x => {
+                render.innerHTML += x;
+              });
+    }
+    const add = () => {
+      if (!shouldInvoke()) return;
+      /** @type {string} */
+      const input = document.getElementById("item-id").value;
+      const validate = /^(?:https:\/\/booth.pm\/(?:ja)\/items\/)?(?<id>\d+)$/;
+      const match = input.match(validate);
+      if (!match) return;
+      const { id } = match.groups;
+      addItem(id);
+    };
+    const serialize = () => [...document.querySelectorAll('[data-item-id]')]
+            .map((/** @type { HTMLElement } */ e) => e.dataset.itemId)
+            .join(",");
+    const deserialize = (s) => s.split(",").forEach(e => addItem(e));
+    /** @see https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/overview */
+    const openTwitter = () => {
+      const { origin, pathname } = window.location;
+      const url = (`${origin}${pathname}#${serialize()}`);
+      const tags = ["#booth_pm", "#booth非公式ほしいものリスト"].join(" ");
+      const message = `BOOTHのほしいものリスト（非公式）を公開しました。誰でも見れますよ！ (via @kisaragi_marine)
+${tags} ${url}`.replaceAll(/\x0a/g, "\x0a").replaceAll(/\x0d/g, "\x0d");
+      const m = encodeURIComponent(message);
+      window.open(`https://twitter.com/intent/tweet?text=${m}`);
+    };
+  </script>
+</head>
+<body>
+<noscript>JavaScriptを有効にしてください。</noscript>
+<div>
+  <h1>BOOTH&trade;のほしいものリスト表示ツール</h1>
+  <h2>これは何？</h2>
+  <p>BOOTH&trade;のほしいものリストを黒魔術で表示します。</p>
+  <h2>どうしたら使える？</h2>
+  <p>ボタンをクリックしてください。</p>
+  <h2>プライバシーポリシー</h2>
+  <p>当サービスはあなたの個人情報を一切収集しません。</p>
+</div>
+<form id="form">
+  <div class="group">
+    <label for="consent-privacy-policy">プライバシーポリシーに同意します</label>
+    <input type="checkbox" name="consent-privacy-policy" id="consent-privacy-policy" required>
+  </div>
+  <div class="group">
+    <label for="item-id">BOOTHのURL、または末尾のアイテムID</label>
+    <input type="text" name="item-id" id="item-id" placeholder="URL or ID" pattern="^(?:\d+|https://booth.pm/(?:ja)/items/\d+)$" required>
+  </div>
+  <div class="group">
+    <input type="button" value="追加" onclick="javascript:add()">
+    <a href="javascript:void(0)" id="tweet" onclick="javascript:openTwitter()">ツイート</a>
+  </div>
+</form>
+<div id="render">
+  <div id="preload">ここにあなたのカートの内容が表示されます</div>
+  <div id="render_inner"></div>
+  <div id="loading">
+    loading...
+  </div>
+</div>
+</body>
+<footer>
+  <div id="copyright">
+    &copy; <span id="copyright-year"></span> Kisaragi Marine
+    <address>
+      <ul class="horizontal-form">
+        <li><a href="mailto:kisaragi.effective@gmail.com">mail</a></li>
+      </ul>
+    </address>
+  </div>
+  <div id="disclaimer">
+    <p><em>BOOTH</em>はピクシブ株式会社の登録商標です（商標第6506932号）。</p>
+  </div>
+</footer>
+</html>
