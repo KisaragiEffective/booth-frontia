@@ -34,14 +34,14 @@
                     });
 
                     const r = document.getElementById("render");
-                    items.forEach(element => {
+                    items.forEach((e) => {
                         // TODO: performance churn
                         r.innerHTML += `<div class="item">
-                            <img src="${element.image}">
-                            <span class="name">${element.name}</span>
-                            <span class="choice">${element.variation ?? ""}</span>
-                            <span class="shop"><a href="${element.region.base}">${element.region.name}</a></span>
-                            <div class="external">${element.url}</div>
+                            <img src="${e.image}">
+                            <span class="name">${e.name}</span>
+                            <span class="choice">${e.variation ?? ""}</span>
+                            <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
+                            <div class="external">${e.url}</div>
                             </div>`;
                     });
                 })
