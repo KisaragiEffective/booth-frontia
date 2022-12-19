@@ -35,7 +35,7 @@
             color: rgba(0, 0, 0, 0.5);
         }
 
-        .item > img {
+        .item-thumb {
             grid-row-start: 1;
             grid-row-end: 4;
             grid-column-start: 1;
@@ -47,7 +47,7 @@
             grid-column-start: 2;
         }
 
-        #render {
+        #render_inner {
             display: grid;
             /* TODO: responsible */
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -98,7 +98,7 @@
                     // reset and construct
                     r.innerHTML = items.map(e => {
                         return `<div class="item">
-                <img src="${e.image}" alt="${e.name}">
+                <img src="${e.image}" alt="${e.name}" class="item-thumb">
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 <span class="choice">${e.variation ?? ""}</span>
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
