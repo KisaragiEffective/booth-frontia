@@ -172,6 +172,7 @@
     const shouldInvoke = () => document.getElementById("form").reportValidity();
     const addItem = (id) => {
       const render = document.getElementById("render_inner");
+      let s;
       fetch(`https://fiddle.ksrgte.ch/v3/item/${id}`)
         .then(x => x.json())
         .then(x => {
@@ -183,22 +184,22 @@
             const min = o.map(e => e.price).reduce((acc, e) => Math.min(acc, e), Infinity);
             return o.length >= 2 ? `${format(min)} 〜` : `${format(min)}`
           })();
-          return `<div class="item" data-item-id="${id}">
+          s = `<div class="item" data-item-id="${id}">
 <img src="${x.images[0].original}" alt="${x.name}" class="item-thumb">
 <span class="name"><a href="${x.url}" class="external">${x.name}</a></span>
 <span class="price">${priceDisplay}</span>
-</div>`
+</div>`;
         })
         .catch(e => {
           console.error(e);
-          return `<div class="item dummy" data-item-id="${id}">
+          s = `<div class="item dummy" data-item-id="${id}">
 <img src="https://placehold.jp/5e5c64/ffffff/72x72.png?text=%3F" alt="Dummy thumbnail for ${id}" class="item-thumb">
 <span class="name"><a href="https://booth.pm/ja/items/${id}" class="external">[詳細情報が取得できませんでした]</a></span>
 <span class="price">&yen; ???</span>
-</div>`
+</div>`;
         })
-        .finally(x => {
-          render.innerHTML += x;
+        .finally(() => {
+          render.innerHTML += s;
         });
     }
     const add = () => {
