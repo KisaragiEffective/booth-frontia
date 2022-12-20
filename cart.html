@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <title>X</title>
+    <title>BOOTH™非公式ツール - カート表示ツール</title>
     <style>
         :root {
             --item-title-size: 1em;
@@ -147,7 +147,7 @@
             hide(loadingIndicator());
             document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
         });
-        const shouldInvoke = () => document.getElementById("form").checkValidity();
+        const shouldInvoke = () => document.getElementById("form").reportValidity();
         const send = () => {
             if (!shouldInvoke()) return;
 
@@ -214,6 +214,7 @@
     <h2>プライバシーポリシー</h2>
     <p>当サービスはあなたのブラウザ上のクッキーを読み取る、及び書き込むことはありません。</p>
     <p>サーバーに問い合わせるために<code>_plaza_session_nktz7u</code>という名前のクッキーを手動で入力していただく必要があります。この値はサーバーに保存されません。</p>
+    <p>当サービスで用いる問い合わせサーバーは破壊活動防止のためにあなたのIPアドレスを記録します。</p>
 </div>
 <form id="form">
     <div class="group">
