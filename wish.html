@@ -169,7 +169,7 @@
         hide(loadingIndicator());
       }
     });
-    const shouldInvoke = () => document.getElementById("form").checkValidity();
+    const shouldInvoke = () => document.getElementById("form").reportValidity();
     const addItem = (id) => {
       const render = document.getElementById("render_inner");
       fetch(`https://fiddle.ksrgte.ch/v1/item/${id}`)
