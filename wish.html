@@ -172,25 +172,21 @@
     const shouldInvoke = () => document.getElementById("form").reportValidity();
     const addItem = (id) => {
       const render = document.getElementById("render_inner");
-      fetch(`https://fiddle.ksrgte.ch/v1/item/${id}`)
+      fetch(`https://fiddle.ksrgte.ch/v2/item/${id}`)
               .then(x => x.json())
               .then(x => {
-                /** @type {{priceCurrency: "JPY"}} */
-                const o = x.offers;
+                /** @type {unknown[]} */
+                const o = x.variations;
                 const format = (n /** @type {number} */) =>
                         n.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'});
-                const d = {
-                  AggregateOffer() {
-                    return `${format(parseInt(o.lowPrice, 10))} 〜`;
-                  },
-                  Offer() {
-                    return format(parseInt(o.price, 10));
-                  },
-                }
+                const priceDisplay = (() => {
+                  const min = o.map(e => e.price).reduce((acc, e) => Math.min(acc, e), Infinity);
+                  return o.length >= 2 ? `${format(min)} 〜` : `${format(min)}`
+                })();
                 return `<div class="item" data-item-id="${id}">
-<img src="${x.image}" alt="${x.name}" class="item-thumb">
+<img src="${x.images[0].original}" alt="${x.name}" class="item-thumb">
 <span class="name"><a href="${x.url}" class="external">${x.name}</a></span>
-<span class="price">${ d[o["@type"]]() }</span>
+<span class="price">${priceDisplay}</span>
 </div>`
               })
               .then(x => {
