@@ -201,7 +201,7 @@
       if (!shouldInvoke()) return;
       /** @type {string} */
       const input = document.getElementById("item-id").value;
-      const validate = /^(?:https:\/\/booth.pm\/(?:ja)\/items\/)?(?<id>\d+)$/;
+      const validate = /^(?:https?:\/\/(?:booth\.pm\/(?:ja|en|ko|zh-cn|zh-tw)|[A-Za-z0-9][A-Za-z0-9-]{1,14}[A-Za-z0-9]\.booth\.pm)\/items\/)?(?<id>\d+)$/;
       const match = input.match(validate);
       if (!match) return;
       const { id } = match.groups;
