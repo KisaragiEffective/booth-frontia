@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <meta charset="utf-8">
     <title>BOOTH™非公式ツール - カート表示ツール</title>
     <style>
         :root {
@@ -134,7 +135,7 @@
             text-align: center;
         }
     </style>
-    <meta charset="utf-8">
+    <script src="./copyright_year.js"></script>
     <script>
         const hide = (e /** @type {HTMLElement} */) => {
             e.style.display = "none";
@@ -145,7 +146,6 @@
         const loadingIndicator = () => document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
             hide(loadingIndicator());
-            document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
         });
         const shouldInvoke = () => document.getElementById("form").reportValidity();
         const send = () => {
