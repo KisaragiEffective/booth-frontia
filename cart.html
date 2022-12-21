@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <meta charset="utf-8">
     <title>BOOTH™非公式ツール - カート表示ツール</title>
     <style>
         :root {
@@ -134,22 +135,16 @@
             text-align: center;
         }
     </style>
-    <meta charset="utf-8">
+    <script src="./copyright_year.js"></script>
+    <script src="./element.js" async></script>
+    <script src="./currency.js" async></script>
     <script>
-        const hide = (e /** @type {HTMLElement} */) => {
-            e.style.display = "none";
-        };
-        const show = (e /** @type {HTMLElement} */) => {
-            e.style.display = "inherit";
-        };
         const loadingIndicator = () => document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
             hide(loadingIndicator());
-            document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
         });
-        const shouldInvoke = () => document.getElementById("form").reportValidity();
         const send = () => {
-            if (!shouldInvoke()) return;
+            if (!validateForm(document.getElementById("form"))) return;
 
             console.assert(loadingIndicator() !== null);
 
@@ -226,7 +221,7 @@
         <input type="checkbox" name="consent-privacy-policy" id="consent-privacy-policy" required>
     </div>
     <div class="group">
-        <input type="button" value="表示" onclick="javascript:send()">
+        <input type="button" value="表示" onclick="send()">
     </div>
 </form>
 <div id="render">

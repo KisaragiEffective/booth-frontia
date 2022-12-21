@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta charset="utf-8">
   <title>BOOTH™非公式ツール - ほしいものリスト</title>
   <style>
     :root {
@@ -134,34 +135,17 @@
       text-align: center;
     }
   </style>
-  <meta charset="utf-8">
-  <script>window.twttr = (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0],
-            t = window.twttr || {};
-    if (d.getElementById(id)) return t;
-    js = d.createElement(s);
-    js.id = id;
-    js.src = "https://platform.twitter.com/widgets.js";
-    fjs.parentNode.insertBefore(js, fjs);
-
-    t._e = [];
-    t.ready = function(f) {
-      t._e.push(f);
-    };
-
-    return t;
-  }(document, "script", "twitter-wjs"));</script>
+  <script src="copyright_year.js"></script>
+  <script src="./twitter_widget_bootstrap.js" async></script>
+  <script src="./element.js" async></script>
+  <script src="./currency.js" async></script>
   <script>
-    const hide = (e /** @type {HTMLElement} */) => {
-      e.style.display = "none";
-    };
-    const show = (e /** @type {HTMLElement} */) => {
-      e.style.display = "inherit";
-    };
+    const BOOTH_ITEM_ID_PATTERN = /^(?:https?:\/\/(?:booth\.pm\/(?:ja|en|ko|zh-cn|zh-tw)|[A-Za-z0-9][A-Za-z0-9-]{1,14}[A-Za-z0-9]\.booth\.pm)\/items\/)?(?<id>\d+)$/;
     const loadingIndicator = () => document.getElementById("loading");
     document.addEventListener("DOMContentLoaded", () => {
       hide(loadingIndicator());
       document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
+      document.getElementById("copyright-year").pattern = BOOTH_ITEM_ID_PATTERN.toString;
       const h = location.hash;
       if (h) {
         show(loadingIndicator());
@@ -169,7 +153,6 @@
         hide(loadingIndicator());
       }
     });
-    const shouldInvoke = () => document.getElementById("form").reportValidity();
     const addItem = (id) => {
       const render = document.getElementById("render_inner");
       let s;
@@ -178,11 +161,9 @@
         .then(x => {
           /** @type {unknown[]} */
           const o = x.variations;
-          const format = (n /** @type {number} */) =>
-                  n.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'});
           const priceDisplay = (() => {
             const min = o.map(e => e.price).reduce((acc, e) => Math.min(acc, e), Infinity);
-            return o.length >= 2 ? `${format(min)} 〜` : `${format(min)}`
+            return o.length >= 2 ? `${formatJapaneseYen(min)} 〜` : `${formatJapaneseYen(min)}`
           })();
           s = `<div class="item" data-item-id="${id}">
 <img src="${x.images[0].original}" alt="${x.name}" class="item-thumb">
@@ -204,12 +185,13 @@
           render.innerHTML += s;
         });
     }
+    const preload = () => document.getElementById("preload");
     const add = () => {
-      if (!shouldInvoke()) return;
+      if (!validateForm(document.getElementById("form"))) return;
+      hide(preload())
       /** @type {string} */
       const input = document.getElementById("item-id").value;
-      const validate = /^(?:https?:\/\/(?:booth\.pm\/(?:ja|en|ko|zh-cn|zh-tw)|[A-Za-z0-9][A-Za-z0-9-]{1,14}[A-Za-z0-9]\.booth\.pm)\/items\/)?(?<id>\d+)$/;
-      const match = input.match(validate);
+      const match = input.match(BOOTH_ITEM_ID_PATTERN);
       if (!match) return;
       const { id } = match.groups;
       addItem(id);
@@ -249,15 +231,15 @@ ${tags} ${url}`.replaceAll(/\x0a/g, "\x0a").replaceAll(/\x0d/g, "\x0d");
   </div>
   <div class="group">
     <label for="item-id">BOOTHのURL、または末尾のアイテムID</label>
-    <input type="text" name="item-id" id="item-id" placeholder="URL or ID" pattern="^(?:\d+|https://booth.pm/(?:ja)/items/\d+)$" required>
+    <input type="text" name="item-id" id="item-id" placeholder="URL or ID" required>
   </div>
   <div class="group">
-    <input type="button" value="追加" onclick="javascript:add()">
-    <a href="javascript:void(0)" id="tweet" onclick="javascript:openTwitter()">ツイート</a>
+    <input type="button" value="追加" onclick="add()">
+    <a href="javascript:void(0)" id="tweet" onclick="openTwitter()">ツイート</a>
   </div>
 </form>
 <div id="render">
-  <div id="preload">ここにあなたのカートの内容が表示されます</div>
+  <div id="preload">ここにあなたのほしいものリストの内容が表示されます</div>
   <div id="render_inner"></div>
   <div id="loading">
     loading...
