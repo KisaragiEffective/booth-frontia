@@ -152,14 +152,9 @@
 
     return t;
   }(document, "script", "twitter-wjs"));</script>
+  <script src="./element.js" async></script>
   <script>
     const BOOTH_ITEM_ID_PATTERN = /^(?:https?:\/\/(?:booth\.pm\/(?:ja|en|ko|zh-cn|zh-tw)|[A-Za-z0-9][A-Za-z0-9-]{1,14}[A-Za-z0-9]\.booth\.pm)\/items\/)?(?<id>\d+)$/;
-    const hide = (e /** @type {HTMLElement} */) => {
-      e.style.display = "none";
-    };
-    const show = (e /** @type {HTMLElement} */) => {
-      e.style.display = "inherit";
-    };
     const loadingIndicator = () => document.getElementById("loading");
     document.addEventListener("DOMContentLoaded", () => {
       hide(loadingIndicator());
@@ -172,7 +167,6 @@
         hide(loadingIndicator());
       }
     });
-    const shouldInvoke = () => document.getElementById("form").reportValidity();
     const addItem = (id) => {
       const render = document.getElementById("render_inner");
       let s;
@@ -209,7 +203,7 @@
     }
     const preload = () => document.getElementById("preload");
     const add = () => {
-      if (!shouldInvoke()) return;
+      if (!validateForm(document.getElementById("form"))) return;
       hide(preload())
       /** @type {string} */
       const input = document.getElementById("item-id").value;

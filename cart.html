@@ -136,20 +136,14 @@
         }
     </style>
     <script src="./copyright_year.js"></script>
+    <script src="./element.js" async></script>
     <script>
-        const hide = (e /** @type {HTMLElement} */) => {
-            e.style.display = "none";
-        };
-        const show = (e /** @type {HTMLElement} */) => {
-            e.style.display = "inherit";
-        };
         const loadingIndicator = () => document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
             hide(loadingIndicator());
         });
-        const shouldInvoke = () => document.getElementById("form").reportValidity();
         const send = () => {
-            if (!shouldInvoke()) return;
+            if (!validateForm(document.getElementById("form"))) return;
 
             console.assert(loadingIndicator() !== null);
 
