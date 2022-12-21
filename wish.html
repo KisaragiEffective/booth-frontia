@@ -152,6 +152,7 @@
     return t;
   }(document, "script", "twitter-wjs"));</script>
   <script>
+    const BOOTH_ITEM_ID_PATTERN = /^(?:https?:\/\/(?:booth\.pm\/(?:ja|en|ko|zh-cn|zh-tw)|[A-Za-z0-9][A-Za-z0-9-]{1,14}[A-Za-z0-9]\.booth\.pm)\/items\/)?(?<id>\d+)$/;
     const hide = (e /** @type {HTMLElement} */) => {
       e.style.display = "none";
     };
@@ -162,6 +163,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       hide(loadingIndicator());
       document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
+      document.getElementById("copyright-year").pattern = BOOTH_ITEM_ID_PATTERN.toString;
       const h = location.hash;
       if (h) {
         show(loadingIndicator());
@@ -210,8 +212,7 @@
       hide(preload())
       /** @type {string} */
       const input = document.getElementById("item-id").value;
-      const validate = /^(?:https?:\/\/(?:booth\.pm\/(?:ja|en|ko|zh-cn|zh-tw)|[A-Za-z0-9][A-Za-z0-9-]{1,14}[A-Za-z0-9]\.booth\.pm)\/items\/)?(?<id>\d+)$/;
-      const match = input.match(validate);
+      const match = input.match(BOOTH_ITEM_ID_PATTERN);
       if (!match) return;
       const { id } = match.groups;
       addItem(id);
@@ -251,7 +252,7 @@ ${tags} ${url}`.replaceAll(/\x0a/g, "\x0a").replaceAll(/\x0d/g, "\x0d");
   </div>
   <div class="group">
     <label for="item-id">BOOTHのURL、または末尾のアイテムID</label>
-    <input type="text" name="item-id" id="item-id" placeholder="URL or ID" pattern="^(?:\d+|https://booth.pm/(?:ja)/items/\d+)$" required>
+    <input type="text" name="item-id" id="item-id" placeholder="URL or ID" required>
   </div>
   <div class="group">
     <input type="button" value="追加" onclick="javascript:add()">
