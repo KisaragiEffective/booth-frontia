@@ -194,7 +194,7 @@
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 ${e.variation ? `<span class="choice">${e.variation}</span>` : ""}
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                <span class="price">${e.price.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'})}</span>
+                <span class="price">${formatJapaneseYen(e.price)}</span>
                 </div>`
                     }).reduce((acc, e) => acc + e, "");
                 })
