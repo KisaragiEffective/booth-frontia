@@ -2,6 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="format-detection" content="email=no,telephone=no,address=no">
+    <meta name="author" content="Kisaragi Marine">
+    <meta property="og:url" content="https://booth-frontia.ksrgte.ch">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BOOTH™非公式ツール - カート表示ツール">
+    <meta property="og:description" content="BOOTHのカートを表示できます。ユーザー登録不要！">
+    <meta property="og:site_name" content="ksrgte.ch">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@kisaragi_marine">
     <title>BOOTH™非公式ツール - カート表示ツール</title>
     <style>
         :root {
@@ -135,9 +145,9 @@
             text-align: center;
         }
     </style>
-    <script src="./copyright_year.js"></script>
-    <script src="./element.js"></script>
-    <script src="./currency.js"></script>
+    <script src="./static/script/copyright_year.js"></script>
+    <script src="./static/script/element.js"></script>
+    <script src="./static/script/currency.js"></script>
     <script>
         const loadingIndicator = () => document.getElementById("loading");
         document.addEventListener("DOMContentLoaded", () => {
@@ -184,7 +194,7 @@
                 <span class="name"><a href="${e.url}" class="external">${e.name}</a></span>
                 ${e.variation ? `<span class="choice">${e.variation}</span>` : ""}
                 <span class="shop"><a href="${e.region.base}">${e.region.name}</a></span>
-                <span class="price">${e.price.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY'})}</span>
+                <span class="price">${formatJapaneseYen(e.price)}</span>
                 </div>`
                     }).reduce((acc, e) => acc + e, "");
                 })
