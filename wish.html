@@ -145,7 +145,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       hide(loadingIndicator());
       document.getElementById("copyright-year").innerText = new Date().getFullYear().toString(10);
-      document.getElementById("copyright-year").pattern = BOOTH_ITEM_ID_PATTERN.toString;
+      document.getElementById("item-id").pattern = BOOTH_ITEM_ID_PATTERN.toString;
       const h = location.hash;
       if (h) {
         show(loadingIndicator());
